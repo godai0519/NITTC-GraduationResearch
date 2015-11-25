@@ -109,4 +109,5 @@ int main(int argc, char* argv[])
     std::cout << "  in-degree: " << in_degree << std::endl;
     std::cout << " out-degree: " << out_degree << std::endl;
     std::cout << "Deg Freedom: " << freedom << std::endl;
+    // TODO: R(entorpy rate) ?
 }

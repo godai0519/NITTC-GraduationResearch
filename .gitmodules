@@ -1,0 +1,3 @@
+[submodule "BayesianNetwork"]
+	path = BayesianNetwork
+	url = git@github.com:godai0519/BayesianNetwork.git

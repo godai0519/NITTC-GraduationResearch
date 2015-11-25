@@ -19,11 +19,37 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\bayesian_network.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\evaluation\aic.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\evaluation\basic_evaluation.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\evaluation\basic_info_criteria.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\evaluation\mdl.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\evaluation\transinformation.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\graph.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\hash.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\inference\belief_propagation.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\inference\likelihood_weighting.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\inference\rejection_sampling.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\learning\brute_force.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\learning\greedy.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\learning\k2_algorithm.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\learning\simulated_annealing.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\learning\stepwise_structure.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\learning\stepwise_structure_hc.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\matrix.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\sampler.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\serializer\bif.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\serializer\csv.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\serializer\dot.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\serializer\dsc.hpp" />
+    <ClInclude Include="BayesianNetwork\bayesian\utility.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="BayesianNetwork\bayesian\CMakeLists.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{44AAB351-A8DB-4B0B-AD6D-778565D17996}</ProjectGuid>
-    <RootNamespace>StructureLearning</RootNamespace>
+    <ProjectGuid>{C641E2CC-9E2B-4E8A-A23F-A1731CB18E3F}</ProjectGuid>
+    <RootNamespace>BayesianNetwork</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -70,34 +96,22 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>C:\boost\include\boost-1_59;$(SolutionDir)BayesianNetwork;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\boost\lib;$(LibraryPath)</LibraryPath>
-    <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)bin\$(Configuration)\experiment\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>C:\boost\include\boost-1_59;$(SolutionDir)BayesianNetwork;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\boost\lib;$(LibraryPath)</LibraryPath>
-    <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)bin\$(Configuration)\experiment\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>C:\boost\include\boost-1_59;$(SolutionDir)BayesianNetwork;$(IncludePath)</IncludePath>
     <LibraryPath>C:\boost\lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)bin\$(Configuration)\experiment\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\boost\include\boost-1_59;$(SolutionDir)BayesianNetwork;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\boost\lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)bin\$(Configuration)\experiment\</OutDir>
-    <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -108,7 +122,6 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -121,7 +134,6 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -136,7 +148,6 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

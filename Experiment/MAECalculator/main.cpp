@@ -1,5 +1,4 @@
 #include <iostream>
-
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/foreach.hpp>
@@ -18,7 +17,6 @@
 #include <bayesian/serializer/bif.hpp>
 #include <bayesian/serializer/csv.hpp>
 
-#define EQLIST_TYPE 0
 std::size_t const MAE_REPEAT_NUM = 10;
 std::size_t const INFERENCE_SAMPLE_SIZE = 1000000;
 
@@ -62,9 +60,7 @@ struct calculate_target {
     template<class OutputStream>
     OutputStream& write_calculate_target(OutputStream& ost) const
     {
-#if !EQLIST_TYPE
         ost << inference << "\n";
-#endif
 
         ost << query.first->id << "," << query.second << "\n";
         ost << evidence.size() << "\n";
@@ -84,10 +80,8 @@ struct calculate_target {
         std::string line;
         
         // 1行目
-#if !EQLIST_TYPE
         std::getline(ist, line);
         inference = std::strtod(line.c_str(), NULL);
-#endif
 
         // 2行目
         std::getline(ist, line);
@@ -305,42 +299,6 @@ int main(int argc, char* argv[])
         sampler.load_sample(teacher_graph.vertex_list());
         std::cout << "Loaded Sample" << std::endl;
 
-#if EQLIST_TYPE
-        // Evidence/Queryがあれば読み込み，なければ生成
-        std::vector<calculate_target> targets;
-        if(boost::filesystem::exists(eqlist_path))
-        {
-            // 読込
-            boost::filesystem::ifstream ifs(eqlist_path);
-            for(int i = 0; i < MAE_REPEAT_NUM; ++i)
-            {
-                calculate_target t;
-                t.load_calculate_target(ifs, teacher_graph);
-                targets.push_back(t);
-            }
-            ifs.close();
-        }
-        else
-        {
-            // 生成
-            targets = generate_inference_target<std::mt19937>(engine, teacher_graph);
-
-            // 書込
-            boost::filesystem::ofstream ofs(eqlist_path);
-            for(auto const& eq : targets) eq.write_calculate_target(ofs);
-            ofs.close();
-        }
-
-        // 推論
-        sampler.make_cpt(teacher_graph);
-        bn::inference::likelihood_weighting lhw(teacher_graph);
-        for(auto& target : targets)
-        {
-            auto const inference = lhw(target.evidence, INFERENCE_SAMPLE_SIZE);
-            target.inference = inference.at(target.query.first)[0][target.query.second];
-            std::cout << "target.inference = " << target.inference << std::endl;
-        }
-#else
         // Evidence/Queryがあれば読み込み，なければ生成
         std::vector<calculate_target> targets;
         if(boost::filesystem::exists(eqlist_path))
@@ -375,7 +333,6 @@ int main(int argc, char* argv[])
             for(auto const& eq : targets) eq.write_calculate_target(ofs);
             ofs.close();
         }
-#endif
 
         for(auto const& result_path : result_paths)
         {
