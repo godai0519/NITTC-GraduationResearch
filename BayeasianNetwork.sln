@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.40629.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BayesianNetwork", "BayesianNetwork\BayesianNetwork.vcxproj", "{C641E2CC-9E2B-4E8A-A23F-A1731CB18E3F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BayesianNetwork", "BayesianNetwork.vcxproj", "{C641E2CC-9E2B-4E8A-A23F-A1731CB18E3F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Development", "Development", "{8B682F16-8F67-46EC-B75E-4B807F4EEE16}"
 EndProject

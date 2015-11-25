@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\serializer">
+      <UniqueIdentifier>{f3efa7cf-4b45-4fc7-bd3a-4e505610c362}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\evaluation">
+      <UniqueIdentifier>{eb654ebd-ae22-4e46-bf5b-d3a15394c92a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\learning">
+      <UniqueIdentifier>{cad7db14-8e16-4e0c-82a0-a1b173b0ced5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\inference">
+      <UniqueIdentifier>{d166685e-0b31-49ac-acc6-06968e810ab5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BayesianNetwork\bayesian\serializer\bif.hpp">
+      <Filter>ヘッダー ファイル\serializer</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\serializer\dsc.hpp">
+      <Filter>ヘッダー ファイル\serializer</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\evaluation\aic.hpp">
+      <Filter>ヘッダー ファイル\evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\evaluation\basic_evaluation.hpp">
+      <Filter>ヘッダー ファイル\evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\evaluation\basic_info_criteria.hpp">
+      <Filter>ヘッダー ファイル\evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\evaluation\mdl.hpp">
+      <Filter>ヘッダー ファイル\evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\learning\brute_force.hpp">
+      <Filter>ヘッダー ファイル\learning</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\learning\greedy.hpp">
+      <Filter>ヘッダー ファイル\learning</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\learning\k2_algorithm.hpp">
+      <Filter>ヘッダー ファイル\learning</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\learning\simulated_annealing.hpp">
+      <Filter>ヘッダー ファイル\learning</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\inference\belief_propagation.hpp">
+      <Filter>ヘッダー ファイル\inference</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\inference\likelihood_weighting.hpp">
+      <Filter>ヘッダー ファイル\inference</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\inference\rejection_sampling.hpp">
+      <Filter>ヘッダー ファイル\inference</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\bayesian_network.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\graph.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\hash.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\matrix.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\sampler.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\evaluation\transinformation.hpp">
+      <Filter>ヘッダー ファイル\evaluation</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\learning\stepwise_structure.hpp">
+      <Filter>ヘッダー ファイル\learning</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\learning\stepwise_structure_hc.hpp">
+      <Filter>ヘッダー ファイル\learning</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\utility.hpp">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\serializer\dot.hpp">
+      <Filter>ヘッダー ファイル\serializer</Filter>
+    </ClInclude>
+    <ClInclude Include="BayesianNetwork\bayesian\serializer\csv.hpp">
+      <Filter>ヘッダー ファイル\serializer</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="BayesianNetwork\bayesian\CMakeLists.txt">
+      <Filter>ヘッダー ファイル</Filter>
+    </Text>
+  </ItemGroup>
+</Project>
