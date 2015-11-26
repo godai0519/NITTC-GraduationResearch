@@ -22,7 +22,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{E96973A6-C542-475C-97FF-95259E0581CA}</ProjectGuid>
+    <ProjectGuid>{C57D9CF0-06B5-40D1-BF34-5D50C467117C}</ProjectGuid>
     <RootNamespace>StructureLearning</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -71,25 +71,25 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>C:\boost\include\boost-1_59;$(SolutionDir)BayesianNetwork;$(IncludePath)</IncludePath>
     <LibraryPath>C:\boost\lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)bin\$(Configuration)\utility\</OutDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>C:\boost\include\boost-1_59;$(SolutionDir)BayesianNetwork;$(IncludePath)</IncludePath>
     <LibraryPath>C:\boost\lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)bin\$(Configuration)\utility\</OutDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>C:\boost\include\boost-1_59;$(SolutionDir)BayesianNetwork;$(IncludePath)</IncludePath>
     <LibraryPath>C:\boost\lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)bin\$(Configuration)\utility\</OutDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\boost\include\boost-1_59;$(SolutionDir)BayesianNetwork;$(IncludePath)</IncludePath>
     <LibraryPath>C:\boost\lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)bin\$(Configuration)\utility\</OutDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

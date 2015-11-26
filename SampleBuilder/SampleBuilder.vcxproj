@@ -19,25 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="algorithms.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="graph_evaluater.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="io.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="algorithms.hpp" />
-    <ClInclude Include="graph_evaluater.hpp" />
-    <ClInclude Include="io.hpp" />
-    <ClInclude Include="experiments.hpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{308A42F1-B2E0-4A59-A7FB-5DADE05F0843}</ProjectGuid>
+    <ProjectGuid>{6D34DCBF-4723-493F-9040-6F2C2BE6EC9C}</ProjectGuid>
     <RootNamespace>StructureLearning</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -86,25 +71,25 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>C:\boost\include\boost-1_59;$(SolutionDir)BayesianNetwork;$(IncludePath)</IncludePath>
     <LibraryPath>C:\boost\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)bin\$(Configuration)\experiment\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>C:\boost\include\boost-1_59;$(SolutionDir)BayesianNetwork;$(IncludePath)</IncludePath>
     <LibraryPath>C:\boost\lib;$(LibraryPath)</LibraryPath>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)bin\$(Configuration)\experiment\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>C:\boost\include\boost-1_59;$(SolutionDir)BayesianNetwork;$(IncludePath)</IncludePath>
     <LibraryPath>C:\boost\lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)bin\$(Configuration)\experiment\</OutDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>C:\boost\include\boost-1_59;$(SolutionDir)BayesianNetwork;$(IncludePath)</IncludePath>
     <LibraryPath>C:\boost\lib;$(LibraryPath)</LibraryPath>
-    <OutDir>$(SolutionDir)bin\$(Configuration)\experiment\</OutDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
