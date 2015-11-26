@@ -60,6 +60,9 @@ int main(int argc, char* argv[])
             auto result = learning(teacher_graph, sampler, algorithm.function);
             sampler.make_cpt(result.graph); // CPTçÏê¨
 
+            // Score
+            result.score = EvaluationAlgorithm(sampler)(result.graph);
+
             // MI Change
             result.change_mi = distance(teacher_graph, result.graph, mi_list);
 
