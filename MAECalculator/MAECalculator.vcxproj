@@ -19,7 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="eqlist_manager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="thread_pool.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="eqlist_manager.hpp" />
+    <ClInclude Include="thread_pool.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C57D9CF0-06B5-40D1-BF34-5D50C467117C}</ProjectGuid>
