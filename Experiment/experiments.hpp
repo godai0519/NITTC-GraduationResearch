@@ -1,4 +1,4 @@
-#define DEBUG_LOG_ 1
+//#define DEBUG_LOG_ 1
 
 #include <bayesian/evaluation/mdl.hpp>
 #include <bayesian/learning/brute_force.hpp>
@@ -269,7 +269,7 @@ std::vector<algorithm_holder> const algorithms = {
         [](bn::graph_t& graph, bn::sampler const& sampler)
         {
             bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::previous_method> sshc(sampler);
-            return sshc(graph, 0.3);
+            return sshc(graph, 0.1);
         }
     },
     {
@@ -277,7 +277,7 @@ std::vector<algorithm_holder> const algorithms = {
         [](bn::graph_t& graph, bn::sampler const& sampler)
         {
             bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::previous_method> sshc(sampler);
-            return sshc(graph, 0.3);
+            return sshc(graph, 0.2);
         }
     },
     {
@@ -293,7 +293,7 @@ std::vector<algorithm_holder> const algorithms = {
         [](bn::graph_t& graph, bn::sampler const& sampler)
         {
             bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::same_method> sshc(sampler);
-            return sshc(graph, 0.3);
+            return sshc(graph, 0.1);
         }
     },
     {
@@ -301,7 +301,7 @@ std::vector<algorithm_holder> const algorithms = {
         [](bn::graph_t& graph, bn::sampler const& sampler)
         {
             bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::same_method> sshc(sampler);
-            return sshc(graph, 0.3);
+            return sshc(graph, 0.2);
         }
     },
     {
@@ -317,7 +317,7 @@ std::vector<algorithm_holder> const algorithms = {
         [](bn::graph_t& graph, bn::sampler const& sampler)
         {
             bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_60_method> sshc(sampler);
-            return sshc(graph, 0.3);
+            return sshc(graph, 0.1);
         }
     },
     {
@@ -325,7 +325,7 @@ std::vector<algorithm_holder> const algorithms = {
         [](bn::graph_t& graph, bn::sampler const& sampler)
         {
             bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_60_method> sshc(sampler);
-            return sshc(graph, 0.3);
+            return sshc(graph, 0.2);
         }
     },
     {
@@ -341,7 +341,7 @@ std::vector<algorithm_holder> const algorithms = {
         [](bn::graph_t& graph, bn::sampler const& sampler)
         {
             bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_50_method> sshc(sampler);
-            return sshc(graph, 0.3);
+            return sshc(graph, 0.1);
         }
     },
     {
@@ -349,7 +349,7 @@ std::vector<algorithm_holder> const algorithms = {
         [](bn::graph_t& graph, bn::sampler const& sampler)
         {
             bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_50_method> sshc(sampler);
-            return sshc(graph, 0.3);
+            return sshc(graph, 0.2);
         }
     },
     {
@@ -365,7 +365,7 @@ std::vector<algorithm_holder> const algorithms = {
         [](bn::graph_t& graph, bn::sampler const& sampler)
         {
             bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_40_method> sshc(sampler);
-            return sshc(graph, 0.3);
+            return sshc(graph, 0.1);
         }
     },
     {
@@ -373,7 +373,7 @@ std::vector<algorithm_holder> const algorithms = {
         [](bn::graph_t& graph, bn::sampler const& sampler)
         {
             bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_40_method> sshc(sampler);
-            return sshc(graph, 0.3);
+            return sshc(graph, 0.2);
         }
     },
     {
@@ -389,7 +389,7 @@ std::vector<algorithm_holder> const algorithms = {
         [](bn::graph_t& graph, bn::sampler const& sampler)
         {
             bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_60_method> sshc(sampler);
-            return sshc(graph, 0.3);
+            return sshc(graph, 0.1);
         }
     },
     {
@@ -397,7 +397,7 @@ std::vector<algorithm_holder> const algorithms = {
         [](bn::graph_t& graph, bn::sampler const& sampler)
         {
             bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_60_method> sshc(sampler);
-            return sshc(graph, 0.3);
+            return sshc(graph, 0.2);
         }
     },
     {
@@ -413,7 +413,7 @@ std::vector<algorithm_holder> const algorithms = {
         [](bn::graph_t& graph, bn::sampler const& sampler)
         {
             bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_50_method> sshc(sampler);
-            return sshc(graph, 0.3);
+            return sshc(graph, 0.1);
         }
     },
     {
@@ -421,7 +421,7 @@ std::vector<algorithm_holder> const algorithms = {
         [](bn::graph_t& graph, bn::sampler const& sampler)
         {
             bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_50_method> sshc(sampler);
-            return sshc(graph, 0.3);
+            return sshc(graph, 0.2);
         }
     },
     {
@@ -437,7 +437,7 @@ std::vector<algorithm_holder> const algorithms = {
         [](bn::graph_t& graph, bn::sampler const& sampler)
         {
             bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_40_method> sshc(sampler);
-            return sshc(graph, 0.3);
+            return sshc(graph, 0.1);
         }
     },
     {
@@ -445,7 +445,7 @@ std::vector<algorithm_holder> const algorithms = {
         [](bn::graph_t& graph, bn::sampler const& sampler)
         {
             bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_40_method> sshc(sampler);
-            return sshc(graph, 0.3);
+            return sshc(graph, 0.2);
         }
     },
     {
