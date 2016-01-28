@@ -22,7 +22,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{187BC313-D7FD-4723-8419-0FC0DF79AFEF}</ProjectGuid>
+    <ProjectGuid>{E05441EE-753B-4095-AD62-181B4882CB82}</ProjectGuid>
     <RootNamespace>StructureLearning</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

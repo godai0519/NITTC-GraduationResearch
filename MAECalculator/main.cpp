@@ -14,24 +14,39 @@
 #include <bayesian/sampler.hpp>
 #include <bayesian/utility.hpp>
 #include <bayesian/inference/likelihood_weighting.hpp>
+#include <bayesian/inference/belief_propagation.hpp>
 #include <bayesian/serializer/bif.hpp>
 #include <bayesian/serializer/csv.hpp>
 
-std::size_t const MAE_REPEAT_NUM = 10;
+double const MAE_ACCURACY = 0.0001;
 std::size_t const INFERENCE_SAMPLE_SIZE = 1000000;
 
-auto process_command_line(int argc, char* argv[])
-    -> std::tuple<std::vector<std::string>, std::string>
+struct commandline_t
+{
+    enum class tag_t{ CREATE_LIST, CALCULATE_MAE };
+
+    tag_t tag_type;
+    std::size_t mae_num;
+    boost::filesystem::path eqlist;
+    boost::filesystem::path network;
+    boost::filesystem::path sample;
+    boost::filesystem::path target;
+};
+
+commandline_t process_command_line(int argc, char* argv[])
 {
     boost::program_options::options_description opt("Option");
     opt.add_options()
-        ("help,h",                                                                 "Show this help")
-        ("directory,d", boost::program_options::value<std::vector<std::string>>(), "Target Graph Directories")
-        ("eqlist,l"   , boost::program_options::value<std::string>()             , "Evidence/Query Data Path");
+        ("help,h"   ,                                               "Show this help")
+        ("eqlist,l" , boost::program_options::value<std::string>(), "Evidence/Query Data Path")
+        ("network,n", boost::program_options::value<std::string>(), "Network path")
+        ("sample,s" , boost::program_options::value<std::string>(), "Sample data path")
+        ("target,t" , boost::program_options::value<std::string>(), "Target path")
+        ("num,i"    , boost::program_options::value<std::size_t>(), "The number of MAE");
 
-	boost::program_options::variables_map vm;
-	store(parse_command_line(argc, argv, opt), vm);
-	notify(vm);
+    boost::program_options::variables_map vm;
+    store(parse_command_line(argc, argv, opt), vm);
+    notify(vm);
 
     if(vm.count("help"))
     {
@@ -39,17 +54,35 @@ auto process_command_line(int argc, char* argv[])
         std::exit(0);
     }
 
-    if(!vm.count("directory") || !vm.count("eqlist"))
+    if(!vm.count("network") || !vm.count("sample") || !vm.count("eqlist") || !vm.count("num"))
     {
-        std::cout << "Need --directory and --eqlist" << std::endl;
+        std::cout << "Need --network, --sample, --eqlist and --num" << std::endl;
         std::cout << opt << std::endl;
         std::exit(0);
     }
 
-    return std::make_tuple(
-        vm["directory"].as<std::vector<std::string>>(),
-        vm["eqlist"].as<std::string>()
-        );
+    if(vm.count("target"))
+    {
+        return {
+            commandline_t::tag_t::CALCULATE_MAE,
+            vm["num"].as<std::size_t>(),
+            vm["eqlist"].as<std::string>(),
+            vm["network"].as<std::string>(),
+            vm["sample"].as<std::string>(),
+            vm["target"].as<std::string>()
+        };
+    }
+    else
+    {
+        return {
+            commandline_t::tag_t::CREATE_LIST,
+            vm["num"].as<std::size_t>(),
+            vm["eqlist"].as<std::string>(),
+            vm["network"].as<std::string>(),
+            vm["sample"].as<std::string>(),
+            ""
+        };
+    }
 }
 
 struct calculate_target {
@@ -78,7 +111,7 @@ struct calculate_target {
         auto const& nodes = graph.vertex_list();
 
         std::string line;
-        
+
         // 1行目
         std::getline(ist, line);
         inference = std::strtod(line.c_str(), NULL);
@@ -118,19 +151,19 @@ std::pair<bn::vertex_type, std::size_t> random_query(std::vector<bn::vertex_type
 }
 
 template<class Engine>
-std::vector<calculate_target> generate_inference_target(Engine& engine, bn::graph_t const& teacher_graph)
+std::vector<calculate_target> generate_inference_target(Engine& engine, bn::graph_t const& teacher_graph, std::size_t const mae_num)
 {
     auto const& nodes = teacher_graph.vertex_list();
 
     // 返すコンテナ
     std::vector<calculate_target> inference_target;
-    inference_target.reserve(MAE_REPEAT_NUM);
+    inference_target.reserve(mae_num);
 
     // MAE_REPEAT_NUM分のデータを作る
-    for(std::size_t i = 0; i < MAE_REPEAT_NUM; ++i)
+    for(std::size_t i = 0; i < mae_num; ++i)
     {
         // Evidence Nodeの最大数を決定
-        std::uniform_int_distribution<std::size_t> node_num_dist(1, teacher_graph.vertex_list().size() / 2);
+        std::uniform_int_distribution<std::size_t> node_num_dist(1, teacher_graph.vertex_list().size());
         std::size_t const maximum_evidence_size = node_num_dist(engine);
 
         // Evidence Nodeの決定
@@ -156,7 +189,7 @@ std::vector<calculate_target> generate_inference_target(Engine& engine, bn::grap
 }
 
 // Mean Absolute Error
-double caluculate_mae(bn::graph_t const& graph, bn::sampler const& sampler, std::vector<calculate_target> const target)
+std::vector<double> caluculate_mae(bn::graph_t const& graph, bn::sampler const& sampler, std::vector<calculate_target> const target)
 {
     // CPTの計算
     sampler.make_cpt(graph);
@@ -164,23 +197,48 @@ double caluculate_mae(bn::graph_t const& graph, bn::sampler const& sampler, std:
     // 確率推論器の作成
     bn::inference::likelihood_weighting lhw(graph);
 
-    double mae = 0.0;
+    std::vector<double> errors;
     for(auto const& elem : target)
     {
         // 推論
-        auto const inference = lhw(elem.evidence, INFERENCE_SAMPLE_SIZE);
+        auto const inference = lhw(elem.evidence, INFERENCE_SAMPLE_SIZE, MAE_ACCURACY);
 
         // 差の計算
-        mae += std::abs(inference.at(elem.query.first)[0][elem.query.second] - elem.inference) / MAE_REPEAT_NUM;
+        auto const difference = std::abs(inference.at(elem.query.first)[0][elem.query.second] - elem.inference);
+        std::cout << "\t" << difference << std::endl;
+        errors.push_back(difference);
     }
 
-    return mae;
+    return errors;
 }
 
-void process_each_graph(bn::graph_t const& teacher_graph, bn::sampler const& sampler, boost::filesystem::path const& result_path, std::vector<calculate_target> const target)
+std::tuple<double, double> calc_average_variance(std::vector<double> const& data)
 {
+    double square_sum = 0;
+    double sum = 0;
+
+    for(auto it = data.begin(); it != data.end(); ++it)
+    {
+        square_sum += *it * *it;
+        sum += *it;
+    }
+
+    return std::make_tuple(sum / data.size(), (square_sum / data.size()) - std::pow(sum / data.size(), 2));
+}
+
+void process_calulate_mae(bn::graph_t& teacher_graph, bn::sampler& sample, boost::filesystem::path const& eqlist_path, std::size_t const num, boost::filesystem::path const& path)
+{
+    // Read E/Q list
+    std::vector<calculate_target> eqlist(num);
+    {
+        boost::filesystem::ifstream ifs(eqlist_path);
+        for(auto& elem : eqlist)
+            elem.load_calculate_target(ifs, teacher_graph);
+    }
+
     // 作業パス
-    boost::filesystem::path const working_directory = result_path.parent_path();
+    boost::filesystem::path const working_directory = path;
+    boost::filesystem::path const result_path = path / "result.csv";
 
     // result.csvを開き，解析，かつMAE計算
     boost::filesystem::ifstream res_ifs(result_path);
@@ -209,16 +267,51 @@ void process_each_graph(bn::graph_t const& teacher_graph, bn::sampler const& sam
             auto graph = teacher_graph;
             graph.erase_all_edge();
 
-            // グラフのCSVのpathを決定
+            // Paths
             auto const graph_path = working_directory / ("graph" + line[0] + ".csv");
-            boost::filesystem::ifstream graph_ifs(graph_path);
-            bn::serializer::csv().load(graph_ifs, graph);
+            auto const errors_path = working_directory / ("graph" + line[0] + "_errors.csv");
 
-            // MAE計算
-            auto const mae = caluculate_mae(graph, sampler, target);
-            total_mae += mae;
-            line[3] = std::to_string(mae);
-            std::cout << mae << std::endl; // Debug
+            if(boost::filesystem::exists(errors_path))
+            {
+                boost::filesystem::ifstream errors_ifs(errors_path);
+
+                std::string first_line;
+                std::getline(errors_ifs, first_line);
+                first_line.erase(first_line.begin(), first_line.begin() + 9);
+                std::cout << first_line << " ";
+
+                auto const mae = std::stod(first_line);
+                total_mae += mae;
+                line[3] = std::to_string(mae);
+                std::cout << mae << std::endl; // Debug
+            }
+            else
+            {
+                // グラフのCSVのpathを決定
+                boost::filesystem::ifstream graph_ifs(graph_path);
+                bn::serializer::csv().load(graph_ifs, graph);
+                graph_ifs.close();
+
+                // MAE計算
+                auto const errors = caluculate_mae(graph, sample, eqlist);
+                auto const error_info = calc_average_variance(errors);
+                auto const mae = std::accumulate(errors.begin(), errors.end(), 0.0) / num;
+
+                // MAE記録CSV
+                boost::filesystem::ofstream errors_ofs(errors_path);
+                errors_ofs << "Average: " << std::get<0>(error_info) << "\n";
+                errors_ofs << "Variance: " << std::get<1>(error_info) << "\n";
+                errors_ofs << "\n";
+                for(auto const error : errors)
+                    errors_ofs << error << "\n";
+                errors_ofs.close();
+
+                // 加算など
+                total_mae += mae;
+                line[3] = std::to_string(mae);
+
+                std::cout << mae << std::endl; // Debug
+            }
 
             ++counter;
         }
@@ -233,113 +326,104 @@ void process_each_graph(bn::graph_t const& teacher_graph, bn::sampler const& sam
     res_ofs.close();
 }
 
-int main(int argc, char* argv[])
+void process_create_list(bn::graph_t& graph, bn::sampler& sample, boost::filesystem::path const& eqlist_path, std::size_t const num)
 {
-    auto engine = bn::make_engine<std::mt19937>();
+    auto const& vertex_list = graph.vertex_list();
+    std::vector<calculate_target> eqlist;
 
-    // コマンドラインパース
-    boost::filesystem::path eqlist_path;
-    std::vector<boost::filesystem::path> target_directory_paths;
+    // 計算
+    while(true)
     {
-        std::vector<std::string> target_directories;
-        std::tie(target_directories, eqlist_path) = process_command_line(argc, argv);
-        std::transform(
-            std::begin(target_directories), std::end(target_directories),
-            std::back_inserter(target_directory_paths),
-            [](std::string const& path) { return boost::filesystem::path(path); }
-            );
+        // 1つ生成
+        auto elem = generate_inference_target(bn::make_engine<std::mt19937>(), graph, 1)[0];
+
+        std::size_t total_counter = 0;
+        std::size_t counter = 0;
+        for(auto const& samp : sample.table())
+        {
+            // Evidence部分が一致するかどうか
+            bool match = true;
+            for(auto const& evidence : elem.evidence/*s*/)
+            {
+                std::size_t const index = std::distance(
+                    vertex_list.begin(),
+                    std::find(vertex_list.begin(), vertex_list.end(), evidence.first)
+                    );
+
+                if(samp.select.at(index) != evidence.second)
+                {
+                    match = false;
+                    break;
+                }
+            }
+
+            // Queryについてカウント
+            if(match)
+            {
+                total_counter += samp.num;
+
+                std::size_t const index = std::distance(
+                    vertex_list.begin(),
+                    std::find(vertex_list.begin(), vertex_list.end(), elem.query.first)
+                    );
+
+                if(samp.select.at(index) == elem.query.second)
+                {
+                    counter += samp.num;
+                }
+            }
+        }
+
+        // 追加
+        if(total_counter != 0)
+        {
+            auto const inf = static_cast<double>(counter) / total_counter;
+            std::cout << inf << std::endl;
+
+            elem.inference = inf;
+            eqlist.push_back(std::move(elem));
+        }
+
+        if(eqlist.size() == num)
+            break;
     }
 
-    // target_directory_pathsの各要素に対して計算を行っていく
-    for(auto const& target_directory : target_directory_paths)
+    // 書き出し
+    boost::filesystem::ofstream ofs(eqlist_path);
+    for(auto const& elem : eqlist)
+        elem.write_calculate_target(ofs);
+}
+
+int main(int argc, char* argv[])
+{
+    auto const command_line = process_command_line(argc, argv);
+
+    std::cout << "Starting..." << std::endl;
+    std::cout << "Network: " << command_line.network << std::endl;
+    std::cout << "Samples: " << command_line.sample << std::endl;
+
+    // グラフファイルを開いてgraph_dataに導入
+    std::string const graph_data{std::istreambuf_iterator<char>(boost::filesystem::ifstream(command_line.network)), std::istreambuf_iterator<char>()};
+    std::cout << "Loaded Graph: Length = " << graph_data.size() << std::endl;
+
+    // graph_dataよりグラフパース
+    bn::graph_t graph;
+    bn::database_t data;
+    std::tie(graph, data) = bn::serializer::bif().parse(graph_data.cbegin(), graph_data.cend());
+    std::cout << "Parsed Graph: Num of Node = " << graph.vertex_list().size() << std::endl;
+
+    // サンプラに読み込ませる
+    bn::sampler sampler;
+    sampler.set_filename(command_line.sample.string());
+    sampler.load_sample(graph.vertex_list());
+    std::cout << "Loaded Sample" << std::endl;
+
+    if(command_line.tag_type == commandline_t::tag_t::CALCULATE_MAE)
     {
-        boost::filesystem::path network_path;
-        boost::filesystem::path sample_path;
-        std::vector<boost::filesystem::path> result_paths;
-
-        BOOST_FOREACH(
-            boost::filesystem::path const& path,
-            std::make_pair(boost::filesystem::recursive_directory_iterator(target_directory), boost::filesystem::recursive_directory_iterator()))
-        {
-            if(path.extension() == ".bif")
-            {
-                network_path = path;
-            }
-            else if(path.extension() == ".sample")
-            {
-                sample_path = path;
-            }
-            else if(path.filename() == "result.csv")
-            {
-                result_paths.push_back(path);
-            }
-        }
-
-        std::cout << "Starting..." << std::endl;
-        std::cout << "Net: " << network_path << std::endl;
-        std::cout << "Sam: " << sample_path << std::endl;
-        for(auto const& result_path : result_paths)
-            std::cout << result_path << std::endl;
-
-        // グラフファイルを開いてgraph_dataに導入
-        boost::filesystem::ifstream ifs(network_path);
-        std::string const graph_data{std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>()};
-        ifs.close();
-        std::cout << "Loaded Graph: Length = " << graph_data.size() << std::endl;
-
-        // graph_dataよりグラフパース
-        bn::graph_t teacher_graph;
-        bn::database_t data;
-        std::tie(teacher_graph, data) = bn::serializer::bif().parse(graph_data.cbegin(), graph_data.cend());
-        std::cout << "Parsed Graph: Num of Node = " << teacher_graph.vertex_list().size() << std::endl;
-
-        // サンプラに読み込ませる
-        bn::sampler sampler;
-        sampler.set_filename(sample_path.string());
-        sampler.load_sample(teacher_graph.vertex_list());
-        std::cout << "Loaded Sample" << std::endl;
-
-        // Evidence/Queryがあれば読み込み，なければ生成
-        std::vector<calculate_target> targets;
-        if(boost::filesystem::exists(eqlist_path))
-        {
-            // 読込
-            boost::filesystem::ifstream ifs(eqlist_path);
-            for(int i = 0; i < MAE_REPEAT_NUM; ++i)
-            {
-                calculate_target t;
-                t.load_calculate_target(ifs, teacher_graph);
-                targets.push_back(t);
-            }
-            ifs.close();
-        }
-        else
-        {
-            // 生成
-            targets = generate_inference_target<std::mt19937>(engine, teacher_graph);
-
-            // 推論
-            sampler.make_cpt(teacher_graph);
-            bn::inference::likelihood_weighting lhw(teacher_graph);
-            for(auto& target : targets)
-            {
-                auto const inference = lhw(target.evidence, INFERENCE_SAMPLE_SIZE);
-                target.inference = inference.at(target.query.first)[0][target.query.second];
-                std::cout << "target.inference = " << target.inference << "\n" << std::endl;
-            }
-
-            // 書込
-            boost::filesystem::ofstream ofs(eqlist_path);
-            for(auto const& eq : targets) eq.write_calculate_target(ofs);
-            ofs.close();
-        }
-
-        for(auto const& result_path : result_paths)
-        {
-            std::cout << "Start: " << result_path << std::endl;
-            process_each_graph(teacher_graph, sampler, result_path, targets);
-        }
-
-        std::cout << std::endl;
+        process_calulate_mae(graph, sampler, command_line.eqlist, command_line.mae_num, command_line.target);
+    }
+    else if(command_line.tag_type == commandline_t::tag_t::CREATE_LIST)
+    {
+        process_create_list(graph, sampler, command_line.eqlist, command_line.mae_num);
     }
 }

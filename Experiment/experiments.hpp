@@ -1,4 +1,4 @@
-//#define DEBUG_LOG_ 1
+#define DEBUG_LOG_ 1
 
 #include <bayesian/evaluation/mdl.hpp>
 #include <bayesian/learning/brute_force.hpp>
@@ -34,6 +34,60 @@ struct previous_method {
         ) const
     {
         return std::pow(alpha, primary_similarity / inner_similarity);
+    }
+    double p3(
+        double const alpha, double const average_similar,
+        double const inner_similarity, double const outer_similarity,
+        double const primary_similarity, double const secondary_similarity
+        ) const
+    {
+        return 1.0;
+    }
+};
+
+struct beta1_method {
+    double p1(
+        double const alpha, double const average_similar,
+        double const inner_similarity, double const outer_similarity,
+        double const primary_similarity, double const secondary_similarity
+        ) const
+    {
+        return std::pow(alpha, outer_similarity / average_similar);
+    }
+    double p2(
+        double const alpha, double const average_similar,
+        double const inner_similarity, double const outer_similarity,
+        double const primary_similarity, double const secondary_similarity
+        ) const
+    {
+        return std::pow(alpha, 1.0 * std::sqrt((primary_similarity * primary_similarity + secondary_similarity * secondary_similarity)/2) / inner_similarity);
+    }
+    double p3(
+        double const alpha, double const average_similar,
+        double const inner_similarity, double const outer_similarity,
+        double const primary_similarity, double const secondary_similarity
+        ) const
+    {
+        return 1.0;
+    }
+};
+
+struct beta2_method {
+    double p1(
+        double const alpha, double const average_similar,
+        double const inner_similarity, double const outer_similarity,
+        double const primary_similarity, double const secondary_similarity
+        ) const
+    {
+        return std::pow(alpha, outer_similarity / average_similar);
+    }
+    double p2(
+        double const alpha, double const average_similar,
+        double const inner_similarity, double const outer_similarity,
+        double const primary_similarity, double const secondary_similarity
+        ) const
+    {
+        return std::pow(alpha, 2.0 * std::sqrt((primary_similarity * primary_similarity + secondary_similarity * secondary_similarity)/2) / inner_similarity);
     }
     double p3(
         double const alpha, double const average_similar,
@@ -256,204 +310,252 @@ struct average_40_method {
 }
 
 std::vector<algorithm_holder> const algorithms = {
+    //{
+    //    "sshc_00",
+    //    [](bn::graph_t& graph, bn::sampler const& sampler)
+    //    {
+    //        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::previous_method> sshc(sampler);
+    //        return sshc(graph, 0.0);
+    //    }
+    //},
+    //{
+    //    "sshc_10",
+    //    [](bn::graph_t& graph, bn::sampler const& sampler)
+    //    {
+    //        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::previous_method> sshc(sampler);
+    //        return sshc(graph, 0.1);
+    //    }
+    //},
     {
-        "sshc_00",
+        "sshc_20",
         [](bn::graph_t& graph, bn::sampler const& sampler)
         {
             bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::previous_method> sshc(sampler);
-            return sshc(graph, 0.0);
-        }
-    },
-    {
-        "sshc_previous_10",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::previous_method> sshc(sampler);
-            return sshc(graph, 0.1);
-        }
-    },
-    {
-        "sshc_previous_20",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::previous_method> sshc(sampler);
             return sshc(graph, 0.2);
         }
     },
     {
-        "sshc_previous_30",
+        "sshc_30",
         [](bn::graph_t& graph, bn::sampler const& sampler)
         {
             bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::previous_method> sshc(sampler);
             return sshc(graph, 0.3);
         }
-    },
-    {
-        "sshc_same_10",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::same_method> sshc(sampler);
-            return sshc(graph, 0.1);
-        }
-    },
-    {
-        "sshc_same_20",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::same_method> sshc(sampler);
-            return sshc(graph, 0.2);
-        }
-    },
-    {
-        "sshc_same_30",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::same_method> sshc(sampler);
-            return sshc(graph, 0.3);
-        }
-    },
-    {
-        "sshc_rms60_10",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_60_method> sshc(sampler);
-            return sshc(graph, 0.1);
-        }
-    },
-    {
-        "sshc_rms60_20",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_60_method> sshc(sampler);
-            return sshc(graph, 0.2);
-        }
-    },
-    {
-        "sshc_rms60_30",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_60_method> sshc(sampler);
-            return sshc(graph, 0.3);
-        }
-    },
-    {
-        "sshc_rms50_10",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_50_method> sshc(sampler);
-            return sshc(graph, 0.1);
-        }
-    },
-    {
-        "sshc_rms50_20",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_50_method> sshc(sampler);
-            return sshc(graph, 0.2);
-        }
-    },
-    {
-        "sshc_rms50_30",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_50_method> sshc(sampler);
-            return sshc(graph, 0.3);
-        }
-    },
-    {
-        "sshc_rms40_10",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_40_method> sshc(sampler);
-            return sshc(graph, 0.1);
-        }
-    },
-    {
-        "sshc_rms40_20",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_40_method> sshc(sampler);
-            return sshc(graph, 0.2);
-        }
-    },
-    {
-        "sshc_rms40_30",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_40_method> sshc(sampler);
-            return sshc(graph, 0.3);
-        }
-    },
-    {
-        "sshc_ave60_10",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_60_method> sshc(sampler);
-            return sshc(graph, 0.1);
-        }
-    },
-    {
-        "sshc_ave60_20",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_60_method> sshc(sampler);
-            return sshc(graph, 0.2);
-        }
-    },
-    {
-        "sshc_ave60_30",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_60_method> sshc(sampler);
-            return sshc(graph, 0.3);
-        }
-    },
-    {
-        "sshc_ave50_10",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_50_method> sshc(sampler);
-            return sshc(graph, 0.1);
-        }
-    },
-    {
-        "sshc_ave50_20",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_50_method> sshc(sampler);
-            return sshc(graph, 0.2);
-        }
-    },
-    {
-        "sshc_ave50_30",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_50_method> sshc(sampler);
-            return sshc(graph, 0.3);
-        }
-    },
-    {
-        "sshc_ave40_10",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_40_method> sshc(sampler);
-            return sshc(graph, 0.1);
-        }
-    },
-    {
-        "sshc_ave40_20",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_40_method> sshc(sampler);
-            return sshc(graph, 0.2);
-        }
-    },
-    {
-        "sshc_ave40_30",
-        [](bn::graph_t& graph, bn::sampler const& sampler)
-        {
-            bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_40_method> sshc(sampler);
-            return sshc(graph, 0.3);
-        }
-    }
+    }//,
+    //{
+    //    "beta1_10",
+    //    [](bn::graph_t& graph, bn::sampler const& sampler)
+    //    {
+    //        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::beta1_method> sshc(sampler);
+    //        return sshc(graph, 0.1);
+    //    }
+    //},
+    //{
+    //    "beta1_20",
+    //    [](bn::graph_t& graph, bn::sampler const& sampler)
+    //    {
+    //        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::beta1_method> sshc(sampler);
+    //        return sshc(graph, 0.2);
+    //    }
+    //},
+    //{
+    //    "beta1_30",
+    //    [](bn::graph_t& graph, bn::sampler const& sampler)
+    //    {
+    //        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::beta1_method> sshc(sampler);
+    //        return sshc(graph, 0.3);
+    //    }
+    //},
+    //{
+    //    "beta2_10",
+    //    [](bn::graph_t& graph, bn::sampler const& sampler)
+    //    {
+    //        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::beta2_method> sshc(sampler);
+    //        return sshc(graph, 0.1);
+    //    }
+    //},
+    //{
+    //    "beta2_20",
+    //    [](bn::graph_t& graph, bn::sampler const& sampler)
+    //    {
+    //        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::beta2_method> sshc(sampler);
+    //        return sshc(graph, 0.2);
+    //    }
+    //},
+    //{
+    //    "beta2_30",
+    //    [](bn::graph_t& graph, bn::sampler const& sampler)
+    //    {
+    //        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::beta2_method> sshc(sampler);
+    //        return sshc(graph, 0.3);
+    //    }
+    //}, 
+    //{
+    //    "sshc_same_10",
+    //    [](bn::graph_t& graph, bn::sampler const& sampler)
+    //    {
+    //        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::same_method> sshc(sampler);
+    //        return sshc(graph, 0.1);
+    //    }
+    //},
+    //{
+    //    "sshc_same_20",
+    //    [](bn::graph_t& graph, bn::sampler const& sampler)
+    //    {
+    //        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::same_method> sshc(sampler);
+    //        return sshc(graph, 0.2);
+    //    }
+    //},
+    //{
+    //    "sshc_same_30",
+    //    [](bn::graph_t& graph, bn::sampler const& sampler)
+    //    {
+    //        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::same_method> sshc(sampler);
+    //        return sshc(graph, 0.3);
+    //    }
+    //},
+    ////{
+    ////    "sshc_rms60_10",
+    ////    [](bn::graph_t& graph, bn::sampler const& sampler)
+    ////    {
+    ////        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_60_method> sshc(sampler);
+    ////        return sshc(graph, 0.1);
+    ////    }
+    ////},
+    ////{
+    ////    "sshc_rms60_20",
+    ////    [](bn::graph_t& graph, bn::sampler const& sampler)
+    ////    {
+    ////        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_60_method> sshc(sampler);
+    ////        return sshc(graph, 0.2);
+    ////    }
+    ////},
+    ////{
+    ////    "sshc_rms60_30",
+    ////    [](bn::graph_t& graph, bn::sampler const& sampler)
+    ////    {
+    ////        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_60_method> sshc(sampler);
+    ////        return sshc(graph, 0.3);
+    ////    }
+    ////},
+    //{
+    //    "sshc_rms50_10",
+    //    [](bn::graph_t& graph, bn::sampler const& sampler)
+    //    {
+    //        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_50_method> sshc(sampler);
+    //        return sshc(graph, 0.1);
+    //    }
+    //},
+    //{
+    //    "sshc_rms50_20",
+    //    [](bn::graph_t& graph, bn::sampler const& sampler)
+    //    {
+    //        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_50_method> sshc(sampler);
+    //        return sshc(graph, 0.2);
+    //    }
+    //},
+    //{
+    //    "sshc_rms50_30",
+    //    [](bn::graph_t& graph, bn::sampler const& sampler)
+    //    {
+    //        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_50_method> sshc(sampler);
+    //        return sshc(graph, 0.3);
+    //    }
+    //},
+    ////{
+    ////    "sshc_rms40_10",
+    ////    [](bn::graph_t& graph, bn::sampler const& sampler)
+    ////    {
+    ////        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_40_method> sshc(sampler);
+    ////        return sshc(graph, 0.1);
+    ////    }
+    ////},
+    ////{
+    ////    "sshc_rms40_20",
+    ////    [](bn::graph_t& graph, bn::sampler const& sampler)
+    ////    {
+    ////        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_40_method> sshc(sampler);
+    ////        return sshc(graph, 0.2);
+    ////    }
+    ////},
+    ////{
+    ////    "sshc_rms40_30",
+    ////    [](bn::graph_t& graph, bn::sampler const& sampler)
+    ////    {
+    ////        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::rms_40_method> sshc(sampler);
+    ////        return sshc(graph, 0.3);
+    ////    }
+    ////},
+    ////{
+    ////    "sshc_ave60_10",
+    ////    [](bn::graph_t& graph, bn::sampler const& sampler)
+    ////    {
+    ////        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_60_method> sshc(sampler);
+    ////        return sshc(graph, 0.1);
+    ////    }
+    ////},
+    ////{
+    ////    "sshc_ave60_20",
+    ////    [](bn::graph_t& graph, bn::sampler const& sampler)
+    ////    {
+    ////        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_60_method> sshc(sampler);
+    ////        return sshc(graph, 0.2);
+    ////    }
+    ////},
+    ////{
+    ////    "sshc_ave60_30",
+    ////    [](bn::graph_t& graph, bn::sampler const& sampler)
+    ////    {
+    ////        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_60_method> sshc(sampler);
+    ////        return sshc(graph, 0.3);
+    ////    }
+    ////},
+    //{
+    //    "sshc_ave50_10",
+    //    [](bn::graph_t& graph, bn::sampler const& sampler)
+    //    {
+    //        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_50_method> sshc(sampler);
+    //        return sshc(graph, 0.1);
+    //    }
+    //},
+    //{
+    //    "sshc_ave50_20",
+    //    [](bn::graph_t& graph, bn::sampler const& sampler)
+    //    {
+    //        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_50_method> sshc(sampler);
+    //        return sshc(graph, 0.2);
+    //    }
+    //},
+    //{
+    //    "sshc_ave50_30",
+    //    [](bn::graph_t& graph, bn::sampler const& sampler)
+    //    {
+    //        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_50_method> sshc(sampler);
+    //        return sshc(graph, 0.3);
+    //    }
+    //}//,
+    ////{
+    ////    "sshc_ave40_10",
+    ////    [](bn::graph_t& graph, bn::sampler const& sampler)
+    ////    {
+    ////        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_40_method> sshc(sampler);
+    ////        return sshc(graph, 0.1);
+    ////    }
+    ////},
+    ////{
+    ////    "sshc_ave40_20",
+    ////    [](bn::graph_t& graph, bn::sampler const& sampler)
+    ////    {
+    ////        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_40_method> sshc(sampler);
+    ////        return sshc(graph, 0.2);
+    ////    }
+    ////},
+    ////{
+    ////    "sshc_ave40_30",
+    ////    [](bn::graph_t& graph, bn::sampler const& sampler)
+    ////    {
+    ////        bn::learning::stepwise_structure_hc<EvaluationAlgorithm, bn::learning::greedy, pruning_probability::average_40_method> sshc(sampler);
+    ////        return sshc(graph, 0.3);
+    ////    }
+    ////}
 };
